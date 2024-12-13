@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reminder for Jenny</title>
+    <style>
+      /* General Styling */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Arial", sans-serif;
+        background: #000; /* Fallback background */
+      }
+
+      /* Centered Container */
+      .container {
+        text-align: center;
+        z-index: 10;
+        animation: float 5s ease-in-out infinite;
+      }
+
+      h1 {
+        font-size: 4rem;
+        color: white;
+        text-transform: uppercase;
+        line-height: 1.2;
+        margin: 0;
+        animation: fade-in 2s ease-out forwards;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+          0 0 20px rgba(255, 255, 255, 0.6);
+      }
+
+      .highlight {
+        color: #ff6347;
+        font-weight: bold;
+        animation: glow 1.5s infinite alternate;
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(-10px);
+        }
+        50% {
+          transform: translateY(10px);
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 10px #ff6347, 0 0 20px #ff6347;
+        }
+        to {
+          text-shadow: 0 0 30px #ff4500, 0 0 50px #ff4500;
+        }
+      }
+
+      /* Full-Screen Canvas */
+      canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Content -->
+    <div class="container">
+      <h1>
+        Reminder for Jenny: it's <span class="highlight">NOT</span> Stanley.
+      </h1>
+    </div>
+
+    <!-- Particle Animation Script -->
+    <script>
+      const canvas = document.createElement("canvas");
+      document.body.appendChild(canvas);
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Generate random colors
+      function randomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgb(${r}, ${g}, ${b})`;
+      }
+
+      let particles = [];
+      const particleColors = Array.from({ length: 4 }, randomColor);
+
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 3 + 1,
+          color:
+            particleColors[Math.floor(Math.random() * particleColors.length)],
+          dx: Math.random() * 2 - 1,
+          dy: Math.random() * 2 - 1,
+        };
+      }
+
+      function updateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((particle) => {
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+          ctx.fillStyle = particle.color;
+          ctx.fill();
+
+          particle.x += particle.dx;
+          particle.y += particle.dy;
+
+          if (particle.x < 0 || particle.x > canvas.width) particle.dx *= -1;
+          if (particle.y < 0 || particle.y > canvas.height) particle.dy *= -1;
+        });
+      }
+
+      function loop() {
+        updateParticles();
+        requestAnimationFrame(loop);
+      }
+
+      function init() {
+        particles = Array.from({ length: 100 }, createParticle);
+        loop();
+      }
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = Array.from({ length: 100 }, createParticle);
+      });
+
+      init();
+    </script>
+  </body>
+</html>
